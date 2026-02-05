@@ -23,7 +23,13 @@
         }
 
         [x-cloak]{display:none!important;}
+        /* Prevent iOS Safari from auto-adjusting font sizes */
+        html{ -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
         html,body{font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
+
+        /* Mobile nav fallback styles (hide default mobile menu if JS or Alpine missing) */
+        .mobile-nav{display:none; flex-direction:column;}
+        .mobile-nav.open{display:flex;}
 
         /* Critical mobile fallback — ensures usable layout when Tailwind/CDN blocked */
         @media (max-width: 640px){
@@ -174,13 +180,14 @@
             </div>
 
             <!-- Mobile Toggle -->
-            <button class="md:hidden p-2 text-slate-600" @click="isMenuOpen = !isMenuOpen">
-                <i class="fa-solid" :class="isMenuOpen ? 'fa-xmark' : 'fa-bars'"></i>
+            <button id="mobile-toggle" class="md:hidden p-2 text-slate-600" @click="isMenuOpen = !isMenuOpen" aria-controls="mobile-menu" aria-expanded="false">
+                <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                <span class="sr-only">Mở menu</span>
             </button>
         </div>
 
         <!-- Mobile Menu -->
-        <div x-show="isMenuOpen" x-cloak x-transition class="md:hidden bg-white border-b border-slate-200 p-4 flex flex-col gap-4">
+        <div id="mobile-menu" class="md:hidden bg-white border-b border-slate-200 p-4 flex flex-col gap-4 mobile-nav" x-show="isMenuOpen" x-cloak x-transition aria-hidden="true">
             <a href="#home" @click="isMenuOpen = false" class="nav-link py-2 font-medium text-slate-600">Trang chủ</a>
             <a href="#about" @click="isMenuOpen = false" class="nav-link py-2 font-medium text-slate-600">Giới thiệu</a>
             <a href="#skills" @click="isMenuOpen = false" class="nav-link py-2 font-medium text-slate-600">Kỹ năng</a>
@@ -477,6 +484,41 @@
                 else if(hasFallback){ showDebug('Tailwind: MISSING (fallback active) • Poppins: ' + (fontsOk? 'OK' : 'Missing'), 'warn'); }
                 else{ showDebug('Tailwind: MISSING • Fallback: None', 'warn'); }
             }catch(e){ console.warn(e); showDebug('Debug error', 'warn'); }
+        })();
+    </script>
+
+    <!-- Mobile menu fallback JS (works when Alpine is not available) -->
+    <script>
+        (function(){
+            document.addEventListener('DOMContentLoaded', function(){
+                var toggle = document.getElementById('mobile-toggle');
+                var menu = document.getElementById('mobile-menu');
+                if(!toggle || !menu) return;
+
+                // ensure menu hidden by default
+                menu.classList.remove('open');
+                menu.setAttribute('aria-hidden','true');
+                toggle.setAttribute('aria-expanded','false');
+
+                toggle.addEventListener('click', function(e){
+                    var isOpen = menu.classList.toggle('open');
+                    menu.setAttribute('aria-hidden', !isOpen);
+                    toggle.setAttribute('aria-expanded', isOpen);
+                    var icon = toggle.querySelector('i.fa-solid');
+                    if(icon){ icon.classList.toggle('fa-bars', !isOpen); icon.classList.toggle('fa-xmark', isOpen); }
+                });
+
+                // close on resize to desktop
+                window.addEventListener('resize', function(){
+                    if(window.innerWidth >= 768){
+                        menu.classList.remove('open');
+                        menu.setAttribute('aria-hidden', true);
+                        toggle.setAttribute('aria-expanded', false);
+                        var icon = toggle.querySelector('i.fa-solid');
+                        if(icon){ icon.classList.remove('fa-xmark'); icon.classList.add('fa-bars'); }
+                    }
+                });
+            });
         })();
     </script>
 </body>
