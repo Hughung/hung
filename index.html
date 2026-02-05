@@ -27,22 +27,24 @@
 
         /* Critical mobile fallback — ensures usable layout when Tailwind/CDN blocked */
         @media (max-width: 640px){
-            html,body{box-sizing:border-box; font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; font-size:16px; line-height:1.5; color:#0f172a; background:var(--bg); overflow-x:hidden;}
+            /* Force readable base font and prevent overflow */
+            html,body{box-sizing:border-box; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; font-size:16px !important; line-height:1.45 !important; color:#0f172a; background:var(--bg); overflow-x:hidden !important;}
             *, *::before, *::after{box-sizing:border-box}
             nav{position:fixed; top:0; left:0; right:0; height:56px; display:flex; align-items:center; padding:0 12px; background:#fff; z-index:60; border-bottom:1px solid rgba(15,23,42,0.06);} 
-            nav .site-brand{font-weight:800; color:var(--primary);}
-            .max-w-6xl{max-width:720px; margin:0 auto; padding:0 12px;}
-            section{padding:2.5rem 0}
-            h1{font-size:1.6rem; margin:0 0 .75rem; line-height:1.08}
-            h2{font-size:1.25rem}
-            p, li, a{font-size:15px; color:#334155}
-            .btn-primary{display:block; width:100%; padding:.75rem; border-radius:8px; text-align:center}
+            nav .site-brand{font-weight:800; color:var(--primary);} 
+            .max-w-6xl,.max-w-4xl{max-width:720px; margin:0 auto; padding:0 12px; width:100% !important}
+            section{padding:1.75rem 0}
+            h1{font-size:1.6rem !important; margin:0 0 .75rem; line-height:1.08}
+            h2{font-size:1.2rem !important}
+            p, li, a{font-size:15px !important; color:#334155}
+            .btn-primary{display:block; width:100% !important; padding:.75rem; border-radius:8px; text-align:center}
             .card{padding:12px; border-radius:12px; box-shadow:0 6px 18px rgba(15,23,42,0.06); border:1px solid rgba(15,23,42,0.04); background:#fff; margin-bottom:1rem}
             .project-card{position:relative; overflow:hidden; border-radius:12px}
             .project-card .overlay{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0}
             .project-card .overlay a{position:relative; z-index:2; background:#fff; color:var(--primary); padding:.5rem 1rem; border-radius:9999px}
             img{max-width:100%; height:auto; display:block}
-            .max-w-4xl{padding-left:12px; padding-right:12px}
+            /* Block excessively large fonts (some devices or UA styles may set huge defaults) */
+            h1,h2,h3,h4,p,li,span,a{max-font-size:28px; font-size:inherit}
             body{padding-top:64px} /* space for fixed nav */
         }
 
@@ -442,6 +444,40 @@
             }
         }catch(e){console.warn('Fallback check error', e);}    
     })();
+    </script>
+
+    <!-- Debug overlay (shows Tailwind/Font status on mobile) -->
+    <style>
+        #debug-status{position:fixed; left:12px; bottom:12px; z-index:9999; background:rgba(0,0,0,0.8); color:#fff; padding:8px 10px; border-radius:8px; font-size:12px; box-shadow:0 6px 20px rgba(2,6,23,0.4); display:none;}
+        #debug-status.ok{background:rgba(6,95,70,0.9)}
+        #debug-status.warn{background:rgba(160,80,0,0.9)}
+    </style>
+    <div id="debug-status" aria-hidden="true">Checking...</div>
+    <script>
+        (function(){
+            function showDebug(msg,cls){
+                var el = document.getElementById('debug-status');
+                if(!el) return;
+                el.textContent = msg; el.className = cls; el.style.display = 'block';
+                setTimeout(function(){ el.style.display = 'none'; }, 7000);
+            }
+
+            try{
+                // check for tailwind utility presence
+                var t = document.createElement('div'); t.className = 'tw-check text-slate-900'; t.style.opacity='0'; document.body.appendChild(t);
+                var cs = window.getComputedStyle(t); document.body.removeChild(t);
+                var hasTailwind = /rgb\(15,\s*23,\s*42\)/.test(cs.color || '') || /#0f172a/i.test(cs.color || '');
+                var hasFallback = !!document.getElementById('fallback-css');
+                // check if Poppins loaded
+                var fontsOk = false;
+                if(document.fonts && document.fonts.check){
+                    try{ fontsOk = document.fonts.check('1em "Poppins"'); }catch(e){}
+                }
+                if(hasTailwind){ showDebug('Tailwind: OK • Poppins: ' + (fontsOk? 'OK' : 'Missing'), 'ok'); }
+                else if(hasFallback){ showDebug('Tailwind: MISSING (fallback active) • Poppins: ' + (fontsOk? 'OK' : 'Missing'), 'warn'); }
+                else{ showDebug('Tailwind: MISSING • Fallback: None', 'warn'); }
+            }catch(e){ console.warn(e); showDebug('Debug error', 'warn'); }
+        })();
     </script>
 </body>
 </html>
