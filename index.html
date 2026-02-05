@@ -577,9 +577,17 @@
     <script>
         (function(){
             document.addEventListener('DOMContentLoaded', function(){
-                var toggle = document.getElementById('mobile-toggle');
+                    var toggle = document.getElementById('mobile-toggle');
                 var menu = document.getElementById('mobile-menu');
                 if(!toggle || !menu) return;
+
+                // If Alpine isn't available, remove Alpine attributes that keep menu hidden (x-cloak / x-show)
+                if(!window.Alpine){
+                    try{ menu.removeAttribute('x-cloak'); }catch(e){}
+                    try{ menu.removeAttribute('x-show'); }catch(e){}
+                    // ensure mobile-nav class present so our .mobile-nav.open rule works
+                    menu.classList.add('mobile-nav');
+                }
 
                 // ensure menu hidden by default
                 menu.classList.remove('open');
