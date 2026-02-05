@@ -22,19 +22,19 @@
         html,body{font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
 
         /* Nav improvements */
-        nav{backdrop-filter: blur(6px); transition: box-shadow .2s ease, background-color .2s ease;}
-        nav.scrolled{box-shadow: 0 6px 20px rgba(2,6,23,0.08); background-color: rgba(255,255,255,0.9);}
+        nav{backdrop-filter: blur(8px); transition: box-shadow .2s ease, background-color .2s ease, transform .2s ease; background: linear-gradient(180deg, rgba(255,255,255,0.8), rgba(255,255,255,0.6));}
+        nav.scrolled{box-shadow: 0 8px 30px rgba(2,6,23,0.08); transform: translateY(0);}
 
         /* Nav link underline (hover + active) */
-        .nav-link{position:relative; padding-bottom:8px; display:inline-block; transition: color .2s ease;}
+        .nav-link{position:relative; padding:10px 6px; display:inline-block; transition: color .18s ease; border-radius:6px;}
         .nav-link::after{
             content: '';
             position: absolute;
-            left: 0;
-            bottom: -6px;
+            left: 12px;
+            bottom: 6px;
             height: 2px;
-            width: 100%;
-            background: linear-gradient(90deg, var(--primary), #60a5fa);
+            width: calc(100% - 24px);
+            background: linear-gradient(90deg, var(--primary), var(--accent));
             border-radius: 2px;
             transform: scaleX(0);
             transform-origin: left center;
@@ -43,39 +43,51 @@
         }
         .nav-link:hover{color: var(--primary);} 
         .nav-link:hover::after{transform: scaleX(1);} 
-        .nav-link-active{color: var(--primary); font-weight:600;} 
-        /* Underline shows only on hover; active keeps color but no persistent underline */ 
-        @media (max-width: 768px){ .nav-link{display:block;} }
+        .nav-link-active{color: var(--primary); font-weight:700; background: rgba(37,99,235,0.04);} 
+        @media (max-width: 768px){ .nav-link{display:block; padding:14px 8px;} }
 
         /* Smooth anchor offset so content isn't hidden under fixed nav */
         section{scroll-margin-top:4.5rem;}
 
         /* Cards */
-        .card{transition: transform .35s cubic-bezier(.2,.9,.2,1), box-shadow .35s; will-change: transform; }
-        .card:hover{transform: translateY(-6px); box-shadow: 0 10px 30px rgba(2,6,23,0.08);}
+        .card{transition: transform .35s cubic-bezier(.2,.9,.2,1), box-shadow .35s; will-change: transform; background: linear-gradient(180deg, #fff, #fbfdff); border-radius: 16px; box-shadow: var(--soft-shadow); border: 1px solid rgba(15,23,42,0.03);} 
+        .card:hover{transform: translateY(-6px); box-shadow: 0 16px 40px rgba(15,23,42,0.09);}
 
         /* Button styles */
         .btn-primary{
-            background-image: linear-gradient(90deg,var(--primary),#60a5fa);
+            background-image: linear-gradient(90deg,var(--primary),var(--accent));
             color: white;
-            box-shadow: 0 10px 30px var(--card-shadow);
-            transition: transform .2s ease, box-shadow .2s ease;
+            box-shadow: 0 10px 30px rgba(37,99,235,0.12);
+            transition: transform .18s ease, box-shadow .18s ease;
+            padding: 0.75rem 1.2rem;
+            border-radius: 10px;
+            display:inline-flex;
+            align-items:center;
+            gap:0.5rem;
         }
-        .btn-primary:hover{transform: translateY(-3px) scale(1.02);}
+        .btn-primary:hover{transform: translateY(-3px) scale(1.03); box-shadow: 0 18px 40px rgba(37,99,235,0.14);} 
+        .btn-primary:active{transform: translateY(-1px) scale(0.99);}
 
         /* Project overlay improvements */
-        .project-card .group:hover img{transform: scale(1.05) translateY(-4px);} 
+        .project-card .group:hover img{transform: scale(1.06) translateY(-4px);} 
         .project-card .overlay{transition: opacity .35s, transform .35s;}
-        .project-card .overlay a{transition: transform .35s; transform: translateY(10px);} 
+        .project-card .overlay a{transition: transform .35s; transform: translateY(10px); background: white; color: var(--primary); border-radius:9999px; padding:0.5rem 1rem; box-shadow: 0 8px 20px rgba(2,6,23,0.08);} 
         .project-card .group:hover .overlay{opacity:1; transform: translateY(0);} 
         .project-card .group:hover .overlay a{transform: translateY(0);} 
 
         /* Profile image */
-        .profile-frame{border-radius:1rem; box-shadow: 0 30px 60px rgba(2,6,23,0.08); overflow:hidden;}
+        .profile-frame{border-radius:1rem; box-shadow: 0 30px 60px rgba(2,6,23,0.08); overflow:hidden; border: 1px solid rgba(37,99,235,0.06);}
+
+        /* Headings and typography */
+        h1{line-height:1.02; letter-spacing:0.02em; font-weight:800; color: #0b1220;}
+        h2{letter-spacing:0.005em; color:#0f172a;}
+        p{color: #475569;}
 
         /* Responsive tweaks */
         @media (max-width: 768px){
-           h1{font-size:2.4rem;}
+           h1{font-size:1.9rem;}
+           .max-w-6xl{padding-left: 1rem; padding-right:1rem;}
+           .project-card .overlay a{padding:0.45rem 0.9rem;}
         }
 
         /* Hero title letter spacing */
@@ -87,7 +99,16 @@
         }
 
         /* Image helper */
-        .project-image-container img{width:100%; height:100%; object-fit:cover; object-position: top center;} 
+        .project-image-container img{width:100%; height:100%; object-fit:cover; object-position: top center; border-radius:12px;} 
+
+        /* Footer */
+        footer{background: linear-gradient(180deg, #0b1220, #091025); color: #cbd5e1;}
+        footer .font-bold{color:white;}
+
+        /* Respect user motion preferences */
+        @media (prefers-reduced-motion: reduce){
+            *{transition:none!important;}
+        }
     </style> 
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans selection:bg-blue-100 selection:text-blue-700" x-data="{ isMenuOpen: false, activeSection: 'home' }">
@@ -131,19 +152,19 @@
                 <div class="inline-block px-4 py-1.5 mb-6 text-sm font-semibold text-blue-700 bg-blue-50 rounded-full border border-blue-100">
                     Sẵn sàng cho các thử thách mới
                 </div>
-                <h1 class="text-5xl md:text-7xl font-extrabold text-slate-900 mb-6 leading-tight uppercase hero-title">
-                    Chào, mình là <span class="text-blue-600 hero-name"><br>NGUYỄN CÔNG HƯNG</span>
+                <h1 class="text-4xl sm:text-5xl md:text-7xl font-extrabold text-slate-900 mb-6 leading-tight hero-title md:uppercase">
+                    Chào, mình là <span class="text-blue-600 hero-name block md:inline">NGUYỄN CÔNG HƯNG</span>
                 </h1>
                 <p class="text-xl text-slate-600 mb-8 max-w-xl">
                     Fullstack Web Developer. Chuyên xây dựng các trang web hiện đại và tối ưu.
                 </p>
                 <div class="flex flex-wrap justify-center md:justify-start gap-4">
-                    <a href="#projects" class="px-8 py-3 btn-primary font-semibold rounded-lg transition-all flex items-center gap-2">
+                    <a href="#projects" class="px-6 sm:px-8 py-3 btn-primary font-semibold rounded-lg transition-all flex items-center gap-2">
                         Xem dự án <i class="fa-solid fa-chevron-right text-xs"></i>
                     </a>
                 </div>
             </div>
-            <div class="w-64 h-64 md:w-80 md:h-80 relative group">
+            <div class="w-48 sm:w-64 h-48 sm:h-64 md:w-80 md:h-80 relative group">
                 <div class="absolute inset-0 bg-blue-600 rounded-2xl rotate-6 opacity-10 group-hover:rotate-12 transition-transform"></div>
                 <div class="absolute inset-0 border-2 border-blue-600 rounded-2xl -rotate-3 group-hover:-rotate-6 transition-transform"></div>
                 <div class="w-full h-full bg-slate-200 rounded-2xl shadow-xl overflow-hidden">
@@ -265,7 +286,7 @@
                             <p>
                                 Đây là dự án nhóm của tôi, được xây dựng dựa trên nhu cầu thực tế về quản lý bán hàng online. Hệ thống bao gồm đầy đủ các tính năng từ phía người dùng đến hệ thống quản trị chuyên sâu.
                             </p>
-                            <ul class="hidden sm:block list-disc list-inside space-y-2 pt-2">
+                            <ul class="list-disc list-inside space-y-2 pt-2">
                                 <li>Thiết kế giao diện chuẩn Responsive, tối ưu trải nghiệm người dùng.</li>
                                 <li>Tích hợp hệ thống bảo mật và phân quyền Admin/User.</li>
                             </ul>
