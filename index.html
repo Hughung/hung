@@ -303,9 +303,9 @@
                         </div>
                         
                         <div class="space-y-4 text-slate-600 leading-relaxed text-sm md:text-base">
-                            <p class="italic text-slate-500">"Giải pháp thương mại điện tử toàn diện cho cửa hàng bán giày"</p>
+                            <p class="italic text-slate-500">"Giải pháp xem phim online toàn diện cho người dùng"</p>
                             <p>
-                                Đây là dự án nhóm của tôi, được xây dựng dựa trên nhu cầu thực tế về quản lý bán hàng online. Hệ thống bao gồm đầy đủ các tính năng từ phía người dùng đến hệ thống quản trị chuyên sâu.
+                                Đây là dự án nhóm của tôi, được xây dựng dựa trên nhu cầu thực tế về quản lý xem phim online. Hệ thống bao gồm đầy đủ các tính năng từ phía người dùng đến hệ thống quản trị chuyên sâu.
                             </p>
                             <ul class="list-disc list-inside space-y-2 pt-2">
                                 <li>Thiết kế giao diện chuẩn Responsive, tối ưu trải nghiệm người dùng.</li>
@@ -394,6 +394,33 @@
                 }
             });
         });
+    </script>
+
+    <!-- Tailwind presence check + fallback CSS if CDN blocked on mobile -->
+    <script>
+    (function(){
+        try{
+            // create test element with a Tailwind utility class
+            const t = document.createElement('div');
+            t.className = 'tw-check text-slate-900';
+            t.style.position = 'absolute'; t.style.opacity = '0';
+            document.body.appendChild(t);
+            const cs = window.getComputedStyle(t);
+            document.body.removeChild(t);
+            const color = cs && cs.color ? cs.color : '';
+            // Tailwind's text-slate-900 usually maps to rgb(15, 23, 42)
+            const tailwindDetected = /rgb\(15,\s*23,\s*42\)/.test(color) || /#0f172a/i.test(color);
+            if(!tailwindDetected){
+                console.warn('Tailwind not detected — injecting fallback CSS for mobile.');
+                var css = '\n/* Fallback CSS - minimal styles when CDN or Tailwind blocked */\nbody{font-family: Poppins, system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial; background:#f8fafc; color:#0f172a; margin:0; padding:0;}\nnav{position:fixed; top:0; left:0; right:0; height:64px; display:flex; align-items:center; padding:0 1rem; background:#fff; border-bottom:1px solid rgba(15,23,42,0.06); z-index:50;}\nnav .site-brand{font-weight:800; color:#2563eb;}\n.max-w-6xl{max-width:1024px; margin:0 auto; padding:0 1rem;}\nsection{padding:3rem 0;}\n.hero-badge{display:inline-block; padding:.375rem 1rem; background:#f0f9ff; border-radius:9999px; color:#2563eb; border:1px solid rgba(96,165,250,.18);}\nh1{font-size:1.6rem; margin:0 0 1rem; font-weight:800;}\np{color:#475569; margin:0 0 1rem;}\n.btn-primary{display:inline-block; background:linear-gradient(90deg,#2563eb,#60a5fa); color:#fff; padding:.7rem 1.2rem; border-radius:10px; text-decoration:none;}\n.card{background:#fff; border-radius:14px; padding:1rem; border:1px solid rgba(15,23,42,0.03); box-shadow:0 6px 18px rgba(15,23,42,0.06); margin-bottom:1rem;}\nimg{max-width:100%; height:auto; display:block;}\n.project-card{position:relative; overflow:hidden; border-radius:12px;}\n.project-card .overlay{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0;}\n.project-card .overlay a{background:#fff; color:#2563eb; padding:.5rem 1rem; border-radius:9999px; box-shadow:0 8px 20px rgba(2,6,23,0.08);}\n@media(max-width:640px){ nav{height:56px; padding:0 .75rem;} h1{font-size:1.4rem;} .btn-primary{width:100%; text-align:center; display:block;} }
+                ';
+                var s = document.createElement('style');
+                s.id = 'fallback-css';
+                s.textContent = css;
+                document.head.appendChild(s);
+            }
+        }catch(e){console.warn('Fallback check error', e);}    
+    })();
     </script>
 </body>
 </html>
