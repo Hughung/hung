@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio | Nguyễn Công Hưng - Web Developer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap');
+
+        :root{
+            --primary: #2563eb;
+            --primary-600: #1e40af;
+            --muted: #64748b;
+            --bg: #f8fafc;
+            --card-shadow: rgba(37,99,235,0.12);
+        }
+
+        [x-cloak]{display:none!important;}
+        html,body{font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
+
+        /* Nav improvements */
+        nav{backdrop-filter: blur(6px); transition: box-shadow .2s ease, background-color .2s ease;}
+        nav.scrolled{box-shadow: 0 6px 20px rgba(2,6,23,0.08); background-color: rgba(255,255,255,0.9);}
+
+        /* Nav link underline (hover + active) */
+        .nav-link{position:relative; padding-bottom:8px; display:inline-block; transition: color .2s ease;}
+        .nav-link::after{
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: -6px;
+            height: 2px;
+            width: 100%;
+            background: linear-gradient(90deg, var(--primary), #60a5fa);
+            border-radius: 2px;
+            transform: scaleX(0);
+            transform-origin: left center;
+            transition: transform .25s cubic-bezier(.2,.9,.2,1);
+            pointer-events: none;
+        }
+        .nav-link:hover{color: var(--primary);} 
+        .nav-link:hover::after{transform: scaleX(1);} 
+        .nav-link-active{color: var(--primary); font-weight:600;} 
+        /* Underline shows only on hover; active keeps color but no persistent underline */ 
+        @media (max-width: 768px){ .nav-link{display:block;} }
+
+        /* Smooth anchor offset so content isn't hidden under fixed nav */
+        section{scroll-margin-top:4.5rem;}
+
+        /* Cards */
+        .card{transition: transform .35s cubic-bezier(.2,.9,.2,1), box-shadow .35s; will-change: transform; }
+        .card:hover{transform: translateY(-6px); box-shadow: 0 10px 30px rgba(2,6,23,0.08);}
+
+        /* Button styles */
+        .btn-primary{
+            background-image: linear-gradient(90deg,var(--primary),#60a5fa);
+            color: white;
+            box-shadow: 0 10px 30px var(--card-shadow);
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+        .btn-primary:hover{transform: translateY(-3px) scale(1.02);}
+
+        /* Project overlay improvements */
+        .project-card .group:hover img{transform: scale(1.05) translateY(-4px);} 
+        .project-card .overlay{transition: opacity .35s, transform .35s;}
+        .project-card .overlay a{transition: transform .35s; transform: translateY(10px);} 
+        .project-card .group:hover .overlay{opacity:1; transform: translateY(0);} 
+        .project-card .group:hover .overlay a{transform: translateY(0);} 
+
+        /* Profile image */
+        .profile-frame{border-radius:1rem; box-shadow: 0 30px 60px rgba(2,6,23,0.08); overflow:hidden;}
+
+        /* Responsive tweaks */
+        @media (max-width: 768px){
+           h1{font-size:2.4rem;}
+        }
+
+        /* Hero title letter spacing */
+        .hero-title{ letter-spacing: 0.02em; }
+        .hero-title .hero-name{ letter-spacing: 0.06em; display:inline-block; }
+        @media (min-width: 768px){
+            .hero-title{ letter-spacing: 0.035em; }
+            .hero-title .hero-name{ letter-spacing: 0.08em; }
+        }
+
+        /* Image helper */
+        .project-image-container img{width:100%; height:100%; object-fit:cover; object-position: top center;} 
+    </style> 
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans selection:bg-blue-100 selection:text-blue-700" x-data="{ isMenuOpen: false, activeSection: 'home' }">
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-white/80 backdrop-blur-md border-b border-slate-200 z-50">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="font-bold text-xl tracking-tighter text-blue-600 cursor-pointer" @click="window.scrollTo(0,0)">
+                CONGHUNG
+            </div>
+            
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex gap-8 font-medium text-sm">
+                <a href="#home" class="nav-link transition-colors hover:text-blue-600" :class="activeSection === 'home' ? 'nav-link-active text-blue-600' : 'text-slate-500'">Trang chủ</a>
+                <a href="#about" class="nav-link transition-colors hover:text-blue-600" :class="activeSection === 'about' ? 'nav-link-active text-blue-600' : 'text-slate-500'">Giới thiệu</a>
+                <a href="#skills" class="nav-link transition-colors hover:text-blue-600" :class="activeSection === 'skills' ? 'nav-link-active text-blue-600' : 'text-slate-500'">Kỹ năng</a>
+                <a href="#projects" class="nav-link transition-colors hover:text-blue-600" :class="activeSection === 'projects' ? 'nav-link-active text-blue-600' : 'text-slate-500'">Dự án</a>
+                <a href="#contact" class="nav-link transition-colors hover:text-blue-600" :class="activeSection === 'contact' ? 'nav-link-active text-blue-600' : 'text-slate-500'">Liên hệ</a>
+            </div>
+
+            <!-- Mobile Toggle -->
+            <button class="md:hidden p-2 text-slate-600" @click="isMenuOpen = !isMenuOpen">
+                <i class="fa-solid" :class="isMenuOpen ? 'fa-xmark' : 'fa-bars'"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div x-show="isMenuOpen" x-cloak x-transition class="md:hidden bg-white border-b border-slate-200 p-4 flex flex-col gap-4">
+            <a href="#home" @click="isMenuOpen = false" class="nav-link py-2 font-medium text-slate-600">Trang chủ</a>
+            <a href="#about" @click="isMenuOpen = false" class="nav-link py-2 font-medium text-slate-600">Giới thiệu</a>
+            <a href="#skills" @click="isMenuOpen = false" class="nav-link py-2 font-medium text-slate-600">Kỹ năng</a>
+            <a href="#projects" @click="isMenuOpen = false" class="nav-link py-2 font-medium text-slate-600">Dự án</a>
+            <a href="#contact" @click="isMenuOpen = false" class="nav-link py-2 font-medium text-slate-600">Liên hệ</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="pt-32 pb-20 px-4">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-12">
+            <div class="flex-1 text-center md:text-left">
+                <div class="inline-block px-4 py-1.5 mb-6 text-sm font-semibold text-blue-700 bg-blue-50 rounded-full border border-blue-100">
+                    Sẵn sàng cho các thử thách mới
+                </div>
+                <h1 class="text-5xl md:text-7xl font-extrabold text-slate-900 mb-6 leading-tight uppercase hero-title">
+                    Chào, mình là <span class="text-blue-600 hero-name"><br>NGUYỄN CÔNG HƯNG</span>
+                </h1>
+                <p class="text-xl text-slate-600 mb-8 max-w-xl">
+                    Fullstack Web Developer. Chuyên xây dựng các trang web hiện đại và tối ưu.
+                </p>
+                <div class="flex flex-wrap justify-center md:justify-start gap-4">
+                    <a href="#projects" class="px-8 py-3 btn-primary font-semibold rounded-lg transition-all flex items-center gap-2">
+                        Xem dự án <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="w-64 h-64 md:w-80 md:h-80 relative group">
+                <div class="absolute inset-0 bg-blue-600 rounded-2xl rotate-6 opacity-10 group-hover:rotate-12 transition-transform"></div>
+                <div class="absolute inset-0 border-2 border-blue-600 rounded-2xl -rotate-3 group-hover:-rotate-6 transition-transform"></div>
+                <div class="w-full h-full bg-slate-200 rounded-2xl shadow-xl overflow-hidden">
+                    <img src="IMG_1521.jpg" alt="Profile Photo" class="w-full h-full object-cover">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 px-4 bg-white">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex flex-col md:flex-row gap-16">
+                <div class="md:w-1/3">
+                    <h2 class="text-3xl font-bold mb-6 flex items-center gap-3">
+                        <i class="fa-solid fa-user text-blue-600"></i> Về tôi
+                    </h2>
+                    <div class="space-y-6">
+                        <div class="border-l-2 border-blue-600 pl-4">
+                            <h3 class="font-bold text-lg text-slate-800">Cao đẳng FPT Polytechnic</h3>
+                            <p class="text-sm text-slate-500 font-medium">2026 - Hiện tại</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:w-2/3">
+                    <p class="text-lg text-slate-600 leading-relaxed mb-8">
+                        Tôi là sinh viên năm cuối đam mê lập trình Web. Tôi luôn tìm tòi những công nghệ mới như React, Next.js và cách tối ưu hóa hiệu suất backend. Mục tiêu của tôi là tạo ra những sản phẩm có giá trị thực tiễn cao cho người dùng.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-20 px-4 bg-slate-50">
+        <div class="max-w-6xl mx-auto text-center">
+            <h2 class="text-3xl font-bold mb-12">Kỹ năng chuyên môn</h2>
+            <div class="grid md:grid-cols-3 gap-8 text-left">
+                <!-- Frontend -->
+                <div class="card bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-laptop-code fa-lg"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Frontend</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-slate-100 text-slate-700 text-sm font-medium rounded-full">HTML5</span>
+                        <span class="px-3 py-1 bg-slate-100 text-slate-700 text-sm font-medium rounded-full">CSS3</span>
+                        <span class="px-3 py-1 bg-slate-100 text-slate-700 text-sm font-medium rounded-full">JavaScript</span>
+                        <span class="px-3 py-1 bg-slate-100 text-slate-700 text-sm font-medium rounded-full">Tailwind CSS</span>
+                    </div>
+                </div>
+                <!-- Backend -->
+                <div class="card bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-server fa-lg"></i>
+                    </div> 
+                    <h3 class="text-xl font-bold mb-4">Backend</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-slate-100 text-slate-700 text-sm font-medium rounded-full">PHP</span>
+                        <span class="px-3 py-1 bg-slate-100 text-slate-700 text-sm font-medium rounded-full">Node.js</span>
+                        <span class="px-3 py-1 bg-slate-100 text-slate-700 text-sm font-medium rounded-full">MySQL</span>
+                        <span class="px-3 py-1 bg-slate-100 text-slate-700 text-sm font-medium rounded-full">MongoDB</span>
+                    </div>
+                </div>
+                <!-- Others -->
+                <div class="card bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fa-solid fa-screwdriver-wrench fa-lg"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Khác</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-slate-100 text-slate-700 text-sm font-medium rounded-full">Git/GitHub</span>
+                        <span class="px-3 py-1 bg-slate-100 text-slate-700 text-sm font-medium rounded-full">Figma</span>
+                        <span class="px-3 py-1 bg-slate-100 text-slate-700 text-sm font-medium rounded-full">Postman</span>
+                        <span class="px-3 py-1 bg-slate-100 text-slate-700 text-sm font-medium rounded-full">Docker</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 px-4 bg-white">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold mb-4 text-slate-900">Dự án tiêu biểu</h2>
+                <div class="w-20 h-1 bg-blue-600 mx-auto rounded-full"></div>
+            </div>
+            
+            <!-- Featured Single Project -->
+                
+                <!-- Project Image Preview (UPDATED WITH YOUR IMAGE) -->
+
+                <!-- Project Content -->    
+<div class="max-w-4xl mx-auto reveal reveal-delay-1">
+                <div class="project-card bg-white rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl border border-slate-100 group">
+                    <!-- Ảnh dự án -->
+                    <div class="relative aspect-video overflow-hidden">
+                        <img src="image.png" alt="Turtle Sneaker" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+                             <a href="https://tuanawh.store/" target="_blank" class="bg-white text-slate-900 px-6 py-2 rounded-full font-bold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-all duration-500"><i class="fa fa-link"></i></a>
+                        </div>
+                    </div>
+                    
+                    <!-- Nội dung mô tả -->
+                    <div class="p-6 md:p-10">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between mb-4 md:mb-6 gap-4">
+                            <h4 class="text-xl md:text-3xl font-bold text-slate-900">CineHub - Website xem phim online</h4>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="bg-slate-100 text-slate-600 text-[10px] font-bold px-3 py-1 rounded-full border border-slate-200 uppercase">PHP</span>
+                                <span class="bg-slate-100 text-slate-600 text-[10px] font-bold px-3 py-1 rounded-full border border-slate-200 uppercase">MYSQL</span>
+                                <span class="bg-slate-100 text-slate-600 text-[10px] font-bold px-3 py-1 rounded-full border border-slate-200 uppercase">HTML5</span>
+                                <span class="bg-slate-100 text-slate-600 text-[10px] font-bold px-3 py-1 rounded-full border border-slate-200 uppercase">CSS3</span>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4 text-slate-600 leading-relaxed text-sm md:text-base">
+                            <p class="italic text-slate-500">"Giải pháp thương mại điện tử toàn diện cho cửa hàng bán giày"</p>
+                            <p>
+                                Đây là dự án nhóm của tôi, được xây dựng dựa trên nhu cầu thực tế về quản lý bán hàng online. Hệ thống bao gồm đầy đủ các tính năng từ phía người dùng đến hệ thống quản trị chuyên sâu.
+                            </p>
+                            <ul class="hidden sm:block list-disc list-inside space-y-2 pt-2">
+                                <li>Thiết kế giao diện chuẩn Responsive, tối ưu trải nghiệm người dùng.</li>
+                                <li>Tích hợp hệ thống bảo mật và phân quyền Admin/User.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 px-4 bg-slate-900 text-white">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl font-bold mb-4">Bắt đầu thảo luận?</h2>
+            <p class="text-slate-400 mb-12 text-lg">Em luôn sẵn sàng cho những cơ hội thực tập và làm việc mới.</p>
+            
+            <div class="grid md:grid-cols-2 gap-12 text-left mb-12">
+                <div class="space-y-8">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-blue-400 shadow-inner">
+                            <i class="fa-solid fa-envelope"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg">Email</h4>
+                            <p class="text-slate-400">nguyenconghung954@gmail.com</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center text-blue-400 shadow-inner">
+                            <i class="fa-solid fa-phone"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-lg">Số Điện Thoại</h4>
+                            <p class="text-slate-400">0559040109</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <form class="space-y-4" onsubmit="event.preventDefault();">
+                    <input type="text" placeholder="Tên của bạn" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-blue-500 transition-colors">
+                    <input type="email" placeholder="Email" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-blue-500 transition-colors">
+                    <textarea placeholder="Lời nhắn..." rows="4" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:border-blue-500 transition-colors"></textarea>
+                    <button class="w-full py-3 bg-blue-600 hover:bg-blue-700 font-bold rounded-lg transition-all flex items-center justify-center gap-2 group shadow-lg shadow-blue-900/40">
+                        Gửi tin nhắn <i class="fa-solid fa-paper-plane group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-4 bg-slate-900 border-t border-white/5 text-center">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-white font-bold text-lg uppercase">CONGHUNG</div>
+            <div class="text-slate-500 text-sm">
+                © <span x-text="new Date().getFullYear()"></span> - Thiết kế bởi Nguyễn Công Hưng
+            </div>
+            <div class="flex gap-4">
+                <a href="#" class="text-slate-400 hover:text-white transition-colors"><i class="fa-brands fa-github"></i></a>
+                <a href="#" class="text-slate-400 hover:text-white transition-colors"><i class="fa-brands fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll Logic -->
+    <script>
+        const nav = document.querySelector('nav');
+        document.addEventListener('scroll', () => {
+            // toggle nav shadow when scrolling
+            if (nav) nav.classList.toggle('scrolled', window.scrollY > 20);
+
+            const sections = ['home', 'about', 'skills', 'projects', 'contact'];
+            const scrollPos = window.scrollY + 120;
+
+            sections.forEach(section => {
+                const el = document.getElementById(section);
+                if (el && scrollPos >= el.offsetTop && scrollPos < el.offsetTop + el.offsetHeight) {
+                    const alpineElement = document.querySelector('[x-data]');
+                    if (alpineElement && alpineElement.__x) {
+                        alpineElement.__x.$data.activeSection = section;
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
