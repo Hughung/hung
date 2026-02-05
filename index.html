@@ -190,7 +190,60 @@
             .md\:flex{display:flex!important}
             .md\:hidden{display:none!important}
             #mobile-toggle{display:none!important}
-            #mobile-menu{display:none!important}
+            #mobile-menu{display:none}
+        }
+        /* allow JS toggling on mobile */
+        .mobile-nav.open{display:flex!important; flex-direction:column!important}
+
+        /* Utility fallbacks: subset of Tailwind utilities used */
+        .container{max-width:1024px;margin:0 auto}
+        .mx-auto{margin-left:auto;margin-right:auto}
+        .px-4{padding-left:1rem;padding-right:1rem}
+        .px-6{padding-left:1.5rem;padding-right:1.5rem}
+        .py-4{padding-top:1rem;padding-bottom:1rem}
+        .flex{display:flex}
+        .inline-flex{display:inline-flex}
+        .flex-col{flex-direction:column}
+        .flex-row{flex-direction:row}
+        .flex-wrap{flex-wrap:wrap}
+        .items-center{align-items:center}
+        .justify-between{justify-content:space-between}
+        .justify-center{justify-content:center}
+        .gap-2{gap:.5rem}
+        .gap-4{gap:1rem}
+        .gap-8{gap:2rem}
+        .hidden{display:none!important}
+        .block{display:block!important}
+        .w-full{width:100%}
+        .h-16{height:4rem}
+        .uppercase{text-transform:uppercase}
+        .rounded-lg{border-radius:.5rem}
+        .rounded-2xl{border-radius:1rem}
+        .rounded-full{border-radius:9999px}
+        .shadow-sm{box-shadow:0 6px 18px rgba(15,23,42,0.06)}
+        .shadow-xl{box-shadow:0 30px 60px rgba(2,6,23,0.08)}
+        .border{border:1px solid rgba(15,23,42,0.06)}
+        .border-slate-100{border-color:rgba(15,23,42,0.04)}
+        .bg-white{background:#fff}
+        .bg-slate-50{background:#f8fafc}
+        .text-slate-900{color:#0f172a}
+        .text-slate-600{color:#475569}
+        .font-bold{font-weight:700}
+        .font-medium{font-weight:600}
+        .text-sm{font-size:.875rem}
+        .text-lg{font-size:1.125rem}
+        .text-xl{font-size:1.25rem}
+        .max-w-6xl{max-width:1024px}
+        .max-w-4xl{max-width:720px}
+        .grid{display:grid}
+        .md\:grid-cols-3{grid-template-columns:repeat(3,1fr)}
+        /* responsive (md = 768px) */
+        @media (min-width:768px){
+            .md\:flex{display:flex!important}
+            .md\:hidden{display:none!important}
+            .md\:grid{display:grid!important}
+            .md\:grid-cols-3{grid-template-columns:repeat(3,1fr)!important}
+            .md\:flex-row{flex-direction:row!important}
         }
     </style>
 </head>
@@ -220,12 +273,12 @@
         </div>
 
         <!-- Mobile Menu -->
-        <div id="mobile-menu" style="display:none!important;" class="md:hidden bg-white border-b border-slate-200 p-4 flex flex-col gap-4 mobile-nav" x-show="isMenuOpen" x-cloak x-transition aria-hidden="true">
-            <a href="#home" @click="isMenuOpen = false" class="nav-link py-2 font-medium text-slate-600">Trang chủ</a>
-            <a href="#about" @click="isMenuOpen = false" class="nav-link py-2 font-medium text-slate-600">Giới thiệu</a>
-            <a href="#skills" @click="isMenuOpen = false" class="nav-link py-2 font-medium text-slate-600">Kỹ năng</a>
-            <a href="#projects" @click="isMenuOpen = false" class="nav-link py-2 font-medium text-slate-600">Dự án</a>
-            <a href="#contact" @click="isMenuOpen = false" class="nav-link py-2 font-medium text-slate-600">Liên hệ</a>
+        <div id="mobile-menu" class="md:hidden bg-white border-b border-slate-200 p-4 flex flex-col gap-4 mobile-nav" x-show="isMenuOpen" x-cloak x-transition aria-hidden="true">
+            <a href="#home" class="nav-link py-2 font-medium text-slate-600 mobile-menu-link">Trang chủ</a>
+            <a href="#about" class="nav-link py-2 font-medium text-slate-600 mobile-menu-link">Giới thiệu</a>
+            <a href="#skills" class="nav-link py-2 font-medium text-slate-600 mobile-menu-link">Kỹ năng</a>
+            <a href="#projects" class="nav-link py-2 font-medium text-slate-600 mobile-menu-link">Dự án</a>
+            <a href="#contact" class="nav-link py-2 font-medium text-slate-600 mobile-menu-link">Liên hệ</a>
         </div>
     </nav>
 
@@ -539,6 +592,18 @@
                     toggle.setAttribute('aria-expanded', isOpen);
                     var icon = toggle.querySelector('i.fa-solid');
                     if(icon){ icon.classList.toggle('fa-bars', !isOpen); icon.classList.toggle('fa-xmark', isOpen); }
+                });
+
+                // close menu when user taps a link (works without Alpine)
+                var links = menu.querySelectorAll('.mobile-menu-link');
+                links.forEach(function(link){
+                    link.addEventListener('click', function(){
+                        menu.classList.remove('open');
+                        menu.setAttribute('aria-hidden', true);
+                        toggle.setAttribute('aria-expanded', false);
+                        var icon = toggle.querySelector('i.fa-solid');
+                        if(icon){ icon.classList.remove('fa-xmark'); icon.classList.add('fa-bars'); }
+                    });
                 });
 
                 // close on resize to desktop
